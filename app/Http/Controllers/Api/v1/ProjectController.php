@@ -30,7 +30,7 @@ class ProjectController extends Controller
      */
 
     public function process() {
-        return response()->json(Project::all()->orderBy('id','desc')->where('state_id',State::where('state','Обработка')->first()->id))->setStatusCode(200,"Processing projects");
+        return response()->json(Project::all()->sortByDesc('id')->where('state_id',State::where('state','Обработка')->first()->id))->setStatusCode(200,"Processing projects");
     }
 
     /**
@@ -39,7 +39,7 @@ class ProjectController extends Controller
      */
 
     public function close() {
-        return response()->json(Project::all()->orderBy('id','desc')->where('state_id',State::where('state','Закрытый')->first()->id))->setStatusCode(200,"Closed projects");
+        return response()->json(Project::all()->sortByDesc('id')->where('state_id',State::where('state','Закрытый')->first()->id))->setStatusCode(200,"Closed projects");
     }
 
     /**
@@ -48,7 +48,7 @@ class ProjectController extends Controller
      */
 
     public function active() {
-        return response()->json(Project::all()->orderBy('id','desc')->where('state_id',State::where('state','Активный')->first()->id))->setStatusCode(200,"Active projects");
+        return response()->json(Project::all()->sortByDesc('id')->where('state_id',State::where('state','Активный')->first()->id))->setStatusCode(200,"Active projects");
     }
 
     /**
@@ -57,7 +57,7 @@ class ProjectController extends Controller
      */
 
     public function open() {
-        return response()->json(Project::all()->orderBy('id','desc')->where('state_id',State::where('state','Открытый')->first()->id))->setStatusCode(200,"Open projects");
+        return response()->json(Project::all()->sortByDesc('id')->where('state_id',State::where('state','Открытый')->first()->id))->setStatusCode(200,"Open projects");
     }
 
     /**
