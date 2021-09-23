@@ -77,6 +77,7 @@
                     <img class="header__auth-img" src="/images/auth.svg" class="IRNITU-logo">
                     <div class="auth auth-restore">
                         <div class="auth__title">Восстановление данных</div>
+   
                         <form method="POST" action="{{ route('resetLinkEmail') }}">
                             @csrf
                             <div class="cross"></div>
@@ -87,7 +88,10 @@
                     </div>
                     <div class="auth"> <!-- Authorization window -->
                         <div class="auth__title">Авторизация</div>
-                        <form method="POST" action="{{ route('login') }}">
+                        <a href="//localhost/campus_auth">
+                            <script src="//int.istu.edu/oauth/auth_button.js"></script>
+                        </a>
+                        <!-- <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="cross"></div>
                             <p>Логин</p>
@@ -100,7 +104,7 @@
                             </div>
                             <a class="auth__forget-link" href="#">Забыли<br> данные?</a>
                             <button class="auth__submit button" type="submit">Войти</button>
-                        </form>
+                        </form> -->
                     </div>  <!-- Authorization window -->
                 @endif
             </div>

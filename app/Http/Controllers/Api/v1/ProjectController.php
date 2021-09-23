@@ -185,7 +185,7 @@ class ProjectController extends Controller
 
         $supervisorEmail = User::where('id',$project->user_id)->first()->email;
         //Mail::to($supervisorEmail)->queue(new CandidateOrderMail($project,$candidate));
-        SendMail::dispatch($supervisorEmail,$project,$candidate);
+        // SendMail::dispatch($supervisorEmail,$project,$candidate);
         return response()->json([
             'status'=>true
         ])->setStatusCode(201,'Order has been created');

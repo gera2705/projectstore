@@ -15,6 +15,7 @@
 Route::get('/', 'MainController@index')->name('index'); // главная страница
 Route::get('/why-answer', 'MainController@whyAnswer')->name('why-answer'); // "Зачем участвовать в проектах"
 
+// Route::get('/campus_auth', 'Api\v1\CampusAuth@auth');
 
 Route::get('/project/{projectId}', 'ProjectController@show')->name('showProject')->where('projectId','[0-9]+'); // Просмотр одного проекта
 
