@@ -49,7 +49,7 @@ class CampusAuth
 
 
         //  возврат
-        //return $return;
-        return redirect('/');
+        return $return;
+        // return redirect('/');
     }
 }

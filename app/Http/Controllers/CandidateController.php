@@ -22,7 +22,6 @@ class CandidateController extends Controller
             'email'=>$request->email,
             'phone'=>$request->phone,
             'competencies'=>$request->competencies,
-            'skill'=>$request->skill,
             'course'=>$request->course,
             'training_group'=>$request->training_group,
             'experience'=>$request->experience,

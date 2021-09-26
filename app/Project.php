@@ -8,7 +8,7 @@ class Project extends Model
 {
     //public $timestamps = false;
     protected $fillable = ['title','places',
-        'state_id','type_id','goal','idea','date_start','date_end',
+        'state_id','type_id','goal','idea','difficulty','date_start','date_end',
         'requirements','customer','expected_result','user_id','additional_inf']; // "массовое назначение"
     public const CREATED_AT = null; // выключение created_at, однако updated_at будет существовать
     protected $hidden = ['error_message','is_scanned','user_id','type_id','type','user','state_id','state']; // "скрытые поля"

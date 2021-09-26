@@ -17,9 +17,9 @@ class CreateCandidatesTable extends Migration
             $table->bigIncrements('id');
             $table->string('fio');
             $table->string('email');
+            $table->string('numz');
             $table->string('phone');
             $table->string('competencies');
-            $table->text('skill');
             $table->integer('course');
             $table->string('training_group');
             $table->text('experience');

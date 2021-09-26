@@ -24,6 +24,7 @@ class CreateProjectsTable extends Migration
             $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');
             $table->string('goal');
             $table->string('idea');
+            $table->tinyInteger('difficulty');
             $table->date('date_start');
             $table->date('date_end');
             $table->string('requirements');
