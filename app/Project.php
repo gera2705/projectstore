@@ -45,8 +45,6 @@ class Project extends Model
         return $state_name;
     }
 
-
-
     public function tags() {
         return $this->belongsToMany('App\Tag'); /// ??
     }
