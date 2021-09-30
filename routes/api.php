@@ -49,7 +49,7 @@ Route::get('/projects/close','Api\v1\ProjectController@close'); // get closed pr
 Route::get('/project/{projectId}','Api\v1\ProjectController@show')->where('projectId','[0-9]+'); // show one project by its id
 Route::post('/project/{projectId}/candidate','Api\v1\ProjectController@storeCandidateOrder')->where('projectId','[0-9]+'); // store candidate order
 
-
+Route::get('/skills', 'Api\v1\SkillsController@index');
 
 //public function index() {
 //    return response()->json(Post::all())->setStatusCode(200,"Posts list");
