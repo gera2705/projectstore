@@ -50,7 +50,7 @@ class ProjectController extends Controller
             'status' => true,
             'projects' => Project::join('states','states.id','=','projects.state_id')->where('states.state','!=','Обработка')
                 ->orderBy('states.priority', 'asc')->select('projects.*')->orderBy('id','desc')->paginate(7)
-        ])->setStatusCode(200,'Paginating 7 projects');
+        ])->setStatusCode(200, 'Paginating 7 projects');
     }
 
     public function show($project_id) {

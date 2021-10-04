@@ -9,9 +9,9 @@ class Project extends Model
     //public $timestamps = false;
     protected $fillable = ['title','places',
         'state_id','type_id','goal','idea','difficulty','date_start','date_end',
-        'requirements','customer','expected_result','user_id','additional_inf']; // "массовое назначение"
+        'requirements','customer','expected_result','user_id','additional_inf'];
     public const CREATED_AT = null; // выключение created_at, однако updated_at будет существовать
-    protected $hidden = ['error_message','is_scanned','user_id','type_id','type','user','state_id','state']; // "скрытые поля"
+    protected $hidden = ['error_message','is_scanned','user_id','type_id','type','user','state_id','state']; 
     protected $appends = ['type_name','user_name','vacant_places','state_name']; // дополнительные свойства
 
 
@@ -37,7 +37,6 @@ class Project extends Model
     }
 
     // взятие состояния
-
     public function getStateNameAttribute($value) {
         $state_name = null;
         if ($this->state)
