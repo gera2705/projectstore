@@ -23,6 +23,10 @@ class CreateParticipationsTable extends Migration
             $table->foreign('id_project')->references('id')->on('projects')->onDelete('cascade');
             $table->foreign('id_candidate')->references('id')->on('candidates')->onDelete('cascade');
             $table->foreign('id_state')->references('id')->on('state_participations')->onDelete('cascade');
+
+            $table->string('role');
+            $table->string('skills');
+            $table->string('experience');
         });
     }
 

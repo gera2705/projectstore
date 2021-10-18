@@ -16,6 +16,7 @@ class CreateCandidatesTable extends Migration
         Schema::create('candidates', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('fio');
+            $table->string('about');
             $table->string('email');
             $table->string('numz');
             $table->string('phone');
@@ -23,9 +24,6 @@ class CreateCandidatesTable extends Migration
             $table->integer('course');
             $table->string('training_group');
             $table->text('experience');
-            $table->unsignedBiginteger('project_id');
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
-            $table->tinyInteger('is_mate')->default(0);
         });
     }
 

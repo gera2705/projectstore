@@ -18,8 +18,8 @@ class CreateProjectsTable extends Migration
             $table->string('title');
             $table->integer('places');
             $table->enum('state', ['Обработка', 'Открытый', 'Активный','Закрытый']);
-            $table->unsignedBiginteger('user_id'); // supervisor_id
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBiginteger('supervisor_id'); // supervisor_id
+            $table->foreign('supervisor_id')->references('id')->on('supervisors')->onDelete('cascade');
             $table->unsignedBiginteger('type_id'); // type_id
             $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');
             $table->string('goal');
