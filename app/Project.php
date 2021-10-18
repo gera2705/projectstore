@@ -7,12 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
     //public $timestamps = false;
-    protected $fillable = ['title','places',
-        'state_id','type_id','goal','idea','difficulty','date_start','date_end',
-        'requirements','customer','expected_result','user_id','additional_inf'];
+    protected $fillable = ['title','places','goal','idea','difficulty','date_start','date_end',
+        'requirements','customer','expected_result','additional_inf'];
     public const CREATED_AT = null; // выключение created_at, однако updated_at будет существовать
-    protected $hidden = ['error_message','is_scanned','user_id','type_id','type','user','state_id','state']; 
-    protected $appends = ['type_name','user_name','vacant_places','state_name']; // дополнительные свойства
+    protected $hidden = ['supervisor','type','state','error_message','is_scanned','supervisor_id','type_id','state_id']; 
+    protected $appends = ['type_name','supervisor_name','vacant_places','state_name']; // дополнительные свойства
 
 
     // взятие типа
@@ -25,14 +24,14 @@ class Project extends Model
 
     // взятие вакантных (свободных) мест
     public function getvacantPlacesAttribute($value) {
-        return $this->places - $this->candidates()->where('is_mate',1)->count();
+        return $this->places; //- $this->candidates()->where('is_mate', 1)->count();
     }
 
     // взятие имя руководителя проекта
-    public function getUserNameAttribute($value) {
+    public function getSupervisorNameAttribute($value) {
         $user_name = null;
-        if ($this->user)
-            $user_name = $this->user->fio;
+        if ($this->supervisor)
+            $user_name = $this->supervisor->fio;
         return $user_name;
     }
 
@@ -48,8 +47,8 @@ class Project extends Model
         return $this->belongsToMany('App\Tag'); /// ??
     }
 
-    public function user() {
-        return $this->belongsTo('App\User');
+    public function supervisor() {
+        return $this->belongsTo('App\Supervisor');
     }
 
     public function type() {
@@ -61,7 +60,7 @@ class Project extends Model
     }
 
     public function candidates() {
-        return $this->hasMany('App\Candidate','project_id');
+        return $this->hasMany('App\Participation','id_project');
     }
 
 }
