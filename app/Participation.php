@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Participation extends Model
 {
   public $timestamps = false;
-  protected $fillable = ['role'];
-  protected $hidden = ['id_project', 'id_candidate', 'id_state', 'experience', 'candidate', 'states', 'projects'];
+  protected $fillable = ['role', 'id_project', 'id_candidate', 'id_state', 'id'];
+  protected $hidden = ['candidate', 'states', 'projects'];
   protected $appends = ['state', 'skills', 'project'];
 
   public function getStateAttribute($value) {

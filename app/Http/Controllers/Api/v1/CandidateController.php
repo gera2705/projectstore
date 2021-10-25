@@ -7,7 +7,9 @@ use App\Candidate;
 use App\CandidatesSkill;
 use App\Participation;
 use App\StateParticipation;
+use App\ParticipationsSkill;
 use App\Http\Requests\CandidateUpdateRequest;
+use App\Http\Requests\CreateParticipationsRequest;
 use Illuminate\Http\Request;
 
 class CandidateController extends Controller
@@ -24,7 +26,7 @@ class CandidateController extends Controller
 
     public function participations($id) {
         $data = Participation::where('id_candidate', $id)->get();
-
+        $data->makeHidden(['id_project', 'id_candidate', 'id_state']);
         return response()->json($data, 200);
     }
 
@@ -40,6 +42,31 @@ class CandidateController extends Controller
         $data = Participation::where('id_candidate', $id)->where('id_project', $id_project)->update([
             'id_state' => $id_cancelState
         ]);
+
+        return response()->json(['status' => 'OK'], 200);
+    }
+
+    public function createParticipation($id, CreateParticipationsRequest $request) {
+        $part_id = Participation::create([
+            'id_project' => $request['id_project'],
+            'id_candidate' => $id,
+            'id_state' => StateParticipation::where('state', 'Ожидание рассмотрения')->select('id')->get()->toArray()[0]['id'],
+            'role' => $request['role']
+        ])->id;
+
+        foreach ($request['skills'] as $skill) {
+            if (!is_int($skill)) {
+                return response()->json([
+                    'status' => false, 
+                    'message' => 'Массив скиллов содержит не число'], 
+                    400); 
+            }
+
+            ParticipationsSkill::create([
+                'id_skill' => $skill,
+                'id_participation' =>  $part_id
+            ]);
+        }
 
         return response()->json(['status' => 'OK'], 200);
     }
@@ -63,7 +90,7 @@ class CandidateController extends Controller
                 'id_candidate' => $id 
             ]);
         }
-        //return response()->json($req);
+
         return response()->json(['status' => true], 200);
     }
 }

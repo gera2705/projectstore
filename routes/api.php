@@ -51,7 +51,7 @@ Route::get('/skills', 'Api\v1\SkillsController@index');
 
 Route::get('/participations/{id}', 'Api\v1\CandidateController@participations')->where('id','[0-9]+');
 Route::delete('/participations/{id}', 'Api\v1\CandidateController@deleteParticipations')->where('id','[0-9]+');
-
+Route::post('/participations/{id}', 'Api\v1\CandidateController@createParticipation')->where('id','[0-9]+');
 /*
  * Supervisors Routes
  */
