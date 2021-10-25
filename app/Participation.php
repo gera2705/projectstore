@@ -7,23 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Participation extends Model
 {
   public $timestamps = false;
-  protected $fillable = ['role', 'skills'];
-  protected $hidden = ['id_project', 'id_candidate', 'id_state', 'experience', 'project', 'candidate', 'states'];
-  protected $appends = ['project_name', 'candidate_name', 'state'];
-
-  public function getProjectNameAttribute($value) {
-    $project_name = null;
-    if ($this->project)
-        $project_name = $this->project->title;
-    return $project_name;
-  }
-
-  public function getCandidateNameAttribute($value) {
-    $candidate_name = null;
-    if ($this->candidate)
-        $candidate_name = $this->candidate->fio;
-    return $candidate_name;
-  }
+  protected $fillable = ['role'];
+  protected $hidden = ['id_project', 'id_candidate', 'id_state', 'experience', 'candidate', 'states', 'projects'];
+  protected $appends = ['state', 'skills', 'project'];
 
   public function getStateAttribute($value) {
     $state = null;
@@ -32,11 +18,18 @@ class Participation extends Model
     return $state;
   }
 
-  public function getSkillsAttribute() {
-    return CandidatesSkill::join('skills','skills.id','=','participations_skills.id_skill')->select('id_skill as id', 'skill')->where('id_participation', $this->id)->get();
+  public function getProjectAttribute($value) {
+    $project = null;
+    if ($this->projects)
+        $project = $this->projects;
+    return $project;
   }
 
-  public function project() {
+  public function getSkillsAttribute() {
+    return ParticipationsSkill::join('skills','skills.id','=','participations_skills.id_skill')->select('id_skill as id', 'skill')->where('id_participation', $this->id)->get();
+  }
+
+  public function projects() {
     return $this->belongsTo('App\Project', 'id_project');
   }
 
