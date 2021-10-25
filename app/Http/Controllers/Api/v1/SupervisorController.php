@@ -22,11 +22,6 @@ class SupervisorController extends Controller
      */
 
     public function register(RegisterSupervisorRequest $request) {
-
-        /*
-         * Добавление руководителя в БД
-         */
-
         User::create (
             [
                 'username' => $request->login,
@@ -36,60 +31,30 @@ class SupervisorController extends Controller
                 'position'=> $request->position
             ]
         );
-
-        /*
-         * Возвращаем ответ
-         */
-
         return response()
             ->json(["status"=>true])
             ->setStatusCode(201,"Supervisor has been registered");
     }
 
-    /*
-     * Авторизация пользователя API
-     */
-
     public function login(Request $request) {
-
-        /*
-         * Ищем пользователя по логину
-         */
-
         $supervisor = User::where('username',$request->login)->first();
-
-        /*
-         * Если пользователь найден и пароль совпадает, значит возвращаем токен и данные о пользователе
-         */
-
         if ($supervisor && Hash::check($request->password,$supervisor->password)) {
-
-            /*
-             * Генерируем токен и обновляем о пользователя
-             */
-
             $supervisor->api_token = Str::random(100);
             $supervisor->save();
-
-            /*
-             * Успешный ответ
-             */
-
             return response()->json([
                 "status" => true,
                 "supervisor" => $supervisor
             ])->setStatusCode(200, 'Supervisor Authenticated');
         }
         else {
-
-            /*
-             * Неуспешный ответ
-             */
-
             return response()->json([
                 "status"=>false,
                 ],401);
-            }
-
         }
+    }
+
+    public function names() {
+        $data = Supervisor::select('id', 'fio')->get();
+        return response()->json($data, 200);
+    }
 }

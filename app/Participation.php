@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Participation extends Model
 {
-  protected $fillable = ['role', 'skills', 'experience'];
-  protected $hidden = ['id_project', 'id_candidate', 'id_state'];
-  protected $appends = ['project_name', 'candidate_name', 'state_name'];
+  public $timestamps = false;
+  protected $fillable = ['role', 'skills'];
+  protected $hidden = ['id_project', 'id_candidate', 'id_state', 'experience', 'project', 'candidate', 'states'];
+  protected $appends = ['project_name', 'candidate_name', 'state'];
 
   public function getProjectNameAttribute($value) {
     $project_name = null;
@@ -24,22 +25,26 @@ class Participation extends Model
     return $candidate_name;
   }
 
-  public function getStateNameAttribute($value) {
-    $state_name = null;
-    if ($this->state)
-        $state_name = $this->state->state;
-    return $state_name;
+  public function getStateAttribute($value) {
+    $state = null;
+    if ($this->states)
+        $state = $this->states->state;
+    return $state;
+  }
+
+  public function getSkillsAttribute() {
+    return CandidatesSkill::join('skills','skills.id','=','participations_skills.id_skill')->select('id_skill as id', 'skill')->where('id_participation', $this->id)->get();
   }
 
   public function project() {
-    return $this->belongsTo('App\Project');
+    return $this->belongsTo('App\Project', 'id_project');
   }
 
   public function candidate() {
-    return $this->belongsTo('App\Candidate');
+    return $this->belongsTo('App\Candidate', 'id_candidate');
   }
 
-  public function state() {
-    return $this->belongsTo('App\StateParticipation');
+  public function states() {
+    return $this->belongsTo('App\StateParticipation', 'id_state');
   }
 }

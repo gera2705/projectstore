@@ -35,22 +35,31 @@ Route::group(['middleware'=>['auth:api']], function () {
     Route::get('/supervisorprojects','Api\v1\ProjectController@supervisorProjects'); // Get supervisor's project
 });
 
+Route::get('/projects', 'Api\v1\ProjectController@index'); 
+Route::post('/projects/filter', 'Api\v1\ProjectController@filter');
+Route::get('/tags', 'Api\v1\TagController@index');
+Route::get('/types', 'Api\v1\TypeController@index');
+Route::get('/states', 'Api\v1\StateController@index');
+
 /*
- * News Routes
+ * Candidates Routes
  */
-
-Route::get('/projects','Api\v1\ProjectController@index'); // get last 100 projects
-Route::get('/projects/process','Api\v1\ProjectController@process'); // get processed projects
-Route::get('/projects/open','Api\v1\ProjectController@open'); // get open projects
-Route::get('/projects/active','Api\v1\ProjectController@active'); // get active projects
-Route::get('/projects/close','Api\v1\ProjectController@close'); // get closed projects
-
-
-Route::get('/project/{projectId}','Api\v1\ProjectController@show')->where('projectId','[0-9]+'); // show one project by its id
-Route::post('/project/{projectId}/candidate','Api\v1\ProjectController@storeCandidateOrder')->where('projectId','[0-9]+'); // store candidate order
+Route::get('/candidate/{id}', 'Api\v1\CandidateController@index')->where('id','[0-9]+');
+Route::put('/candidate/{id}', 'Api\v1\CandidateController@updateInfo')->where('id','[0-9]+');
 
 Route::get('/skills', 'Api\v1\SkillsController@index');
 
-//public function index() {
-//    return response()->json(Post::all())->setStatusCode(200,"Posts list");
-//}
+Route::get('/participations/{id}', 'Api\v1\CandidateController@participations')->where('id','[0-9]+');
+Route::delete('/participations/{id}', 'Api\v1\CandidateController@deleteParticipations')->where('id','[0-9]+');
+
+/*
+ * Supervisors Routes
+ */
+Route::get('/supervisors/names', 'Api\v1\SupervisorController@names');
+
+
+// Route::get('/project/{projectId}','Api\v1\ProjectController@show')->where('projectId','[0-9]+'); // show one project by its id
+//Route::post('/project/{projectId}/candidate','Api\v1\ProjectController@storeCandidateOrder')->where('projectId','[0-9]+'); // store candidate order
+
+
+
