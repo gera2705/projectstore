@@ -14,7 +14,7 @@ class CreateParticipationsTable extends Migration
     public function up()
     {
         Schema::create('participations', function (Blueprint $table) {
-            $table->primary(['id_project', 'id_candidate', 'id_state']);
+            $table->bigIncrements('id');
 
             $table->unsignedBigInteger('id_project');
             $table->unsignedBigInteger('id_candidate');
@@ -25,7 +25,6 @@ class CreateParticipationsTable extends Migration
             $table->foreign('id_state')->references('id')->on('state_participations')->onDelete('cascade');
 
             $table->string('role');
-            $table->string('skills');
             $table->string('experience');
         });
     }
