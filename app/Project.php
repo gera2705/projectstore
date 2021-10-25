@@ -11,7 +11,7 @@ class Project extends Model
         'requirements','customer','expected_result','additional_inf'];
     public const CREATED_AT = null; // выключение created_at, однако updated_at будет существовать
     protected $hidden = ['supervisor','type','state','error_message','is_scanned','supervisor_id','type_id','state_id']; 
-    protected $appends = ['type_name','supervisor_name','vacant_places','state_name']; // дополнительные свойства
+    protected $appends = ['tags', 'type_name','supervisor_name','vacant_places','state_name']; // дополнительные свойства
 
 
     // взятие типа
@@ -24,7 +24,8 @@ class Project extends Model
 
     // взятие вакантных (свободных) мест
     public function getvacantPlacesAttribute($value) {
-        return $this->places; //- $this->candidates()->where('is_mate', 1)->count();
+        $id_activeState = StateParticipation::where('state', 'Участвует')->select('id')->get()[0]['id'];
+        return $this->places - Participation::where('id_project', $this->id)->where('id_state', $id_activeState)->count();
     }
 
     // взятие имя руководителя проекта
@@ -42,9 +43,9 @@ class Project extends Model
             $state_name = $this->state->state;
         return $state_name;
     }
-
-    public function tags() {
-        return $this->belongsToMany('App\Tag'); /// ??
+    
+    public function getTagsAttribute($value) {
+        return ProjectTag::join('tags','tags.id','=','project_tags.tag_id')->select('tag_id as id', 'tag')->where('project_id', $this->id)->get();
     }
 
     public function supervisor() {

@@ -9,6 +9,7 @@ use App\Http\Requests\CandidateStoreRequest;
 use App\Http\Requests\CandidateStoreRequestApi;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectStoreRequestApi;
+use App\Http\Requests\ProjectFilterRequest;
 use App\Jobs\SendMail;
 use App\Mail\CandidateOrderMail;
 use App\Project;
@@ -24,33 +25,19 @@ use \Illuminate\Support\Facades\Response as FacadeResponse;
 class ProjectController extends Controller
 {
 
-    public function process() {
-        return $this->getProjectsByState('Обработка', 'Processing');
-    }
-
-    public function close() {
-        return $this->getProjectsByState('Закрытый', 'Closed');
-    }
-
-    public function active() {
-        return $this->getProjectsByState('Активный', 'Active');
-    }
-
-    public function open() {
-        return $this->getProjectsByState('Открытый', 'Open');
-    }
-
-    private function getProjectsByState($state, $en_state) {
-        $data = Project::orderBy('updated_at', 'DESC')->where('state_id', State::where('state', $state)->first()->id);
-        return response()->json($data->get()->toArray())->setStatusCode(200, $en_state . ' projects');
-    }
-
     public function index() {
-        return response()->json([
-            'status' => true,
-            'projects' => Project::join('states','states.id','=','projects.state_id')->where('states.state','!=','Обработка')
-                ->orderBy('states.priority', 'asc')->select('projects.*')->orderBy('id','desc')->paginate(7)
-        ])->setStatusCode(200, 'Paginating 7 projects');
+        $data = Project::join('states','states.id','=','projects.state_id')->where('states.state','!=','Обработка')
+        ->orderBy('updated_at', 'DESC')->select('projects.*')->orderBy('id','desc')->simplePaginate(7);
+        $data = $data->toArray()['data'];
+        
+        return response()->json($data)->setStatusCode(200, 'Paginating 7 projects');
+    }
+
+    public function filter(ProjectFilterRequest $request) {
+        $projects = Project::join('states','states.id','=','projects.state_id')->where('states.state', '!=' ,'Обработка');
+    
+
+        return response()->json($projects)->setStatusCode(200, 'Paginating 7 projects');
     }
 
     public function show($project_id) {
@@ -84,7 +71,7 @@ class ProjectController extends Controller
         ]);
         $project->tags()->sync($request->tags);
 
-        return response()->json(["status" => true])->setStatusCode(201,"Project is created");
+        return response()->json(["status" => true])->setStatusCode(201, "Project is created");
     }
 
     public function supervisorProjects() {
