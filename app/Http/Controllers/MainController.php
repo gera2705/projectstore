@@ -101,7 +101,7 @@ class MainController extends Controller
 //                                END")
                // ->orderBy('state_id')
 
-            ->orderBy('states.priority', 'asc')->select('projects.*')
+            ->orderBy('states.id', 'asc')->select('projects.*')
             ->orderBy('id','desc')
             ->paginate(7);
 

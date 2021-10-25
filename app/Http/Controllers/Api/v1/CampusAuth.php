@@ -57,27 +57,24 @@ class CampusAuth
                 'email' => $return['email'],
                 'numz' => $numz,
                 'phone' => '',
+                'about' => '',
                 'competencies' => '',
                 'course' => 3,
                 'training_group' => $return['data_student']['grup'],
                 'experience' => '',
-                'project_id' => 11,
-                'is_mate' => 0,
                 'is_watched' => 0,
             ]);
         } else {
             Candidate::where('numz', $numz)->limit(1)->update([
-                'fio' => $fio,
+                'fio' => $fio, 
                 'email' => $return['email'],
                 'course' => 3,
                 'training_group' => $return['data_student']['grup'],
-                'project_id' => 23,
-                'is_mate' => 0,
                 'is_watched' => 0,
             ]);
         }
 
-        return $return;
-        //return redirect('/');
+        //return $return;
+        return redirect('/');
     }
 }

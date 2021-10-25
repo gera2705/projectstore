@@ -12,8 +12,7 @@ class ApiRequest extends FormRequest
     // не достигается желаемое поведение
     protected function failedValidation(Validator $validator) {
         throw new HttpResponseException(response()->json([
-            "status"=>false,
             "errors"=>$validator->errors()
-        ],422));
+        ], 422));
     }
 }
