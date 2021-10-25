@@ -10,6 +10,6 @@ class State extends Model
     protected $fillable = ['state'];
 
     public function projects() {
-        return $this->hasMany('App\Project','state_id');
+        return $this->hasMany('App\Project', 'state_id');
     }
 }
