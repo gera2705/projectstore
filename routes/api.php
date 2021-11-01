@@ -44,14 +44,22 @@ Route::get('/states', 'Api\v1\StateController@index');
 /*
  * Candidates Routes
  */
-Route::get('/candidate/{id}', 'Api\v1\CandidateController@index')->where('id','[0-9]+');
-Route::put('/candidate/{id}', 'Api\v1\CandidateController@updateInfo')->where('id','[0-9]+');
+Route::group(['middleware'=>['apiAuth']], function() {
+    Route::get('/candidate', 'Api\v1\CandidateController@index');
+    Route::put('/candidate', 'Api\v1\CandidateController@updateInfo');
+
+    Route::get('/participations', 'Api\v1\CandidateController@participations');
+    Route::delete('/participations/{id}', 'Api\v1\CandidateController@deleteParticipations')->where('id','[0-9]+');
+    Route::post('/participations/{id}', 'Api\v1\CandidateController@createParticipation')->where('id','[0-9]+');    
+
+    Route::get('/candidate/skills', 'Api\v1\CandidateController@getSkills');
+});
+
+
 
 Route::get('/skills', 'Api\v1\SkillsController@index');
 
-Route::get('/participations/{id}', 'Api\v1\CandidateController@participations')->where('id','[0-9]+');
-Route::delete('/participations/{id}', 'Api\v1\CandidateController@deleteParticipations')->where('id','[0-9]+');
-Route::post('/participations/{id}', 'Api\v1\CandidateController@createParticipation')->where('id','[0-9]+');
+
 /*
  * Supervisors Routes
  */

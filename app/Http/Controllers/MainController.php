@@ -21,7 +21,7 @@ class MainController extends Controller
      */
 
     public function index(Request $request) {
-        $supervisors = User::where('role','supervisor')->get();
+        $supervisors = Supervisor::all();
         $tags = Tag::all();
         $types = Type::all();
         $projectsQuery = Project::query();

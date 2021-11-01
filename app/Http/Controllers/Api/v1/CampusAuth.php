@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Candidate;  
+use Illuminate\Support\Str;
 
 class CampusAuth 
 {
@@ -50,7 +51,14 @@ class CampusAuth
         $numz = $return['data_student']['nomz'];
         $user = Candidate::where('numz', $numz)->limit(1)->get();
         $fio = $return['last_name'] . ' ' . $return['name'] . ' ' . $return['second_name'];
-        
+        $group = $return['data_student']['grup'];
+        //высчитываем номер курса из группы
+        $course = intval(explode('-', $group)[1]);
+        //если сентябрь то на курс выше
+        $course = date('m') > 8 ? date('y') - $course + 1 : date('y') - $course;
+        $api_token = hash('sha256', Str::random(60));
+
+
         if ($user->count() == 0) {
             Candidate::create([
                 'fio' => $fio,
@@ -59,22 +67,23 @@ class CampusAuth
                 'phone' => '',
                 'about' => '',
                 'competencies' => '',
-                'course' => 3,
-                'training_group' => $return['data_student']['grup'],
+                'course' => $course,
+                'training_group' => $group,
                 'experience' => '',
                 'is_watched' => 0,
+                'api_token' => $api_token
             ]);
         } else {
             Candidate::where('numz', $numz)->limit(1)->update([
                 'fio' => $fio, 
                 'email' => $return['email'],
-                'course' => 3,
-                'training_group' => $return['data_student']['grup'],
+                'course' => $course,
+                'training_group' => $group,
                 'is_watched' => 0,
+                'api_token' => $api_token
             ]);
         }
-
-        //return $return;
-        return redirect('/');
+        
+        return json_encode(['token' => $api_token]);
     }
 }

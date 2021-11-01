@@ -8,16 +8,12 @@ class Candidate extends Model
 {
     public $timestamps = false;
     protected $fillable = ['fio', 'email', 'about', 'numz', 'phone',
-        'course', 'training_group', 'experience']; 
+        'course', 'training_group']; 
     protected $appends = ['active_participate', 'skills'];
-    protected $hidden = ['is_watched', 'active_participate', 'competencies'];
+    protected $hidden = ['is_watched', 'active_participate', 'competencies', 'api_token'];
 
     public function getActiveParticipateAttribute($value) {
         return $this->pariticaptions();
-    }
-
-    public function getExperienceAttribute() {
-        //return Participation::where('id_candidate', $this->id)->get();
     }
 
     public function getSkillsAttribute($value) {

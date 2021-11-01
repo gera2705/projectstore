@@ -20,10 +20,9 @@ class CreateCandidatesTable extends Migration
             $table->string('email');
             $table->string('numz');
             $table->string('phone');
-            $table->string('competencies');
             $table->integer('course');
             $table->string('training_group');
-            $table->text('experience');
+            $table->string('api_token')->nullable();
         });
     }
 

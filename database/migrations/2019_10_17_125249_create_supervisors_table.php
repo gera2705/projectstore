@@ -17,7 +17,7 @@ class CreateSupervisorsTable extends Migration
             $table->bigIncrements('id');
             $table->string('fio');
             $table->string('email');
-            $table->string('api_token');
+            $table->string('api_token')->nullable();
             $table->string('position');
         });
     }

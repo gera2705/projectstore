@@ -10,7 +10,7 @@ class Project extends Model
     protected $fillable = ['title','places','goal','idea','difficulty','date_start','date_end',
         'requirements','customer','expected_result','additional_inf'];
     public const CREATED_AT = null; // выключение created_at, однако updated_at будет существовать
-    protected $hidden = ['supervisor','type','state','error_message','is_scanned','supervisor_id','type_id','state_id']; 
+    protected $hidden = ['supervisor', 'type','state','error_message','is_scanned','supervisor_id','type_id','state_id']; 
     protected $appends = ['tags', 'type_name','supervisor_name','vacant_places','state_name']; // дополнительные свойства
 
 

@@ -24,8 +24,7 @@ class CreateParticipationsRequest extends ApiRequest
     public function rules()
     {
       return [
-        'id_project' => 'required|integer',
-        'role' => 'required|string',
+        'motivation' => 'required|string',
         'skills' => 'present|array|min:0'
       ];
     }
