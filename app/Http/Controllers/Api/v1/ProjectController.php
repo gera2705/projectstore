@@ -13,9 +13,13 @@ use App\Http\Requests\ProjectFilterRequest;
 use App\Jobs\SendMail;
 use App\Mail\CandidateOrderMail;
 use App\Project;
+use App\ProjectTag;
 use App\State;
 use App\Type;
 use App\User;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -33,11 +37,87 @@ class ProjectController extends Controller
         return response()->json($data)->setStatusCode(200, 'Paginating 7 projects');
     }
 
-    public function filter(ProjectFilterRequest $request) {
-        $projects = Project::join('states','states.id','=','projects.state_id')->where('states.state', '!=' ,'Обработка');
-    
+    public function paginate($items, $perPage = 7, $page = null, $options = []) {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+    }
 
-        return response()->json($projects)->setStatusCode(200, 'Paginating 7 projects');
+    public function filter(Request $request) {
+        $data = Project::all();
+        
+        //фильтрация по типу
+        $types = array_map(function($value) {
+            return intval($value);
+        }, $request->input('type') ?? []);
+        if (count($types) != 0)
+            $data = $data->whereIn('type_id', $types);
+
+        //фильтрация по состоянию
+        $states = array_map(function($value) {
+            return intval($value);
+        }, $request->input('state') ?? []);
+        if (count($states) != 0)
+            $data = $data->whereIn('state_id', $states);
+
+        //фильтрация по руководителю
+        $supervisors = array_map(function($value) {
+            return intval($value);
+        }, $request->input('supervisor') ?? []);
+        if (count($supervisors) != 0)
+            $data = $data->whereIn('supervisor_id', $supervisors);
+
+        //фильтрация по сложности
+        $difficulty = array_map(function($value) {
+            return intval($value);
+        }, $request->input('difficulty') ?? []);
+        if (count($difficulty) != 0)
+            $data = $data->whereIn('difficulty', $difficulty);
+
+        //фильтрация по тегам
+        $tags = array_map(function($value) {
+            return intval($value);
+        }, $request->input('tags') ?? []);
+        if (count($tags) != 0) {
+            $idProjectsWithTags = ProjectTag::select('project_id as id')->whereIn('tag_id', $tags)->get()->toArray();
+            $idProject = [];
+            foreach ($idProjectsWithTags as $key => $value) {
+                array_push($idProject, $value['id']);
+            } 
+            $data = $data->whereIn('id', $idProject);
+        }
+
+        //фильтрация по названию
+        $title = $request->input('title') ?? '';
+        if ($title != '') {
+            $data = $data->filter(function ($value) use ($title) {
+                return (strpos(mb_strtolower($value->title), mb_strtolower($title)) !== false);
+            })->values();
+        }
+
+        //фильтрация по датам
+        $dateStart = $request->input('date_start') ?? '';
+        $dateEnd = $request->input('date_end') ?? '';
+        if ($dateStart != '') {
+            $data = $data->filter(function ($value) use ($dateStart) {
+                return $value->date_start >= $dateStart;
+            })->values();
+        }
+        if ($dateEnd != '') {
+            $data = $data->filter(function ($value) use ($dateEnd) {
+                return $value->date_end <= $dateEnd;
+            })->values();
+        }
+
+        $page = intval($request->input('page')) ?? 1;
+        $data = $this->paginate($data, 7, $page);
+        $data = $data->toArray()['data'];
+
+        $dataArr = [];
+        foreach ($data as $key => $value) {
+           array_push($dataArr, $value);
+        }
+        return response()->json($dataArr)->setStatusCode(200);
     }
 
     public function show($project_id) {
