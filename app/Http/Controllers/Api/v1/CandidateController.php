@@ -129,7 +129,9 @@ class CandidateController extends Controller
         $token = $request->get('api_token');
 		$id = Candidate::where('api_token', $token)->select('id')->get()[0]['id'];
 
-        $data = CandidatesSkill::where('id_candidate', $id)->get();
+        $data = CandidatesSkill::join('skills', 'skills.id', '=', 'candidates_skills.id_skill')
+            ->where('id_candidate', $id)->select('skills.id', 'skills.skill')->get();
+
         return response()->json($data, 200);
     }
 }
