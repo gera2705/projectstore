@@ -66,6 +66,7 @@ class ProjectController extends Controller
             ]);
         }
 
+
         return response()->json(['success' => 'OK'], 200);
     }
 
@@ -95,8 +96,11 @@ class ProjectController extends Controller
     public function index() {
         $data = Project::join('states','states.id','=','projects.state_id')->where('states.state','!=','Обработка')
         ->orderBy('updated_at', 'DESC')->select('projects.*')->orderBy('id','desc')->simplePaginate(7);
+       
+        $data->makeHidden(['state_id', 'supervisor_id', 'type_id']);
         $data = $data->toArray()['data'];
         
+       
         return response()->json($data)->setStatusCode(200, 'Paginating 7 projects');
     }
 
@@ -185,8 +189,11 @@ class ProjectController extends Controller
 
         $page = intval($request->input('page')) ?? 1;
         $data = $this->paginate($data, 7, $page);
+        $data->makeHidden(['state_id', 'supervisor_id', 'type_id']);
+       
         $data = $data->toArray()['data'];
 
+       
         $dataArr = [];
         foreach ($data as $key => $value) {
            array_push($dataArr, $value);

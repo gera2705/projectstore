@@ -48,8 +48,8 @@ class CandidateController extends Controller
 		$id = Candidate::where('api_token', $token)->select('id')->get()[0]['id'];
 
         $data = Participation::where('id_candidate', $id)->simplePaginate(7);
-        $data->makeHidden(['id_project', 'id_candidate', 'id_state']);
-        
+        $data->makeHidden(['id_project', 'id_candidate', 'id_state', 'date']);
+
         $data = $data->toArray()['data'];
         
         return response()->json($data, 200);
