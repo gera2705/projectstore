@@ -53,6 +53,13 @@ class SupervisorController extends Controller
         }
     }
 
+    public function get(Request $request) {
+        $token = $request->get('api_token');
+        $data = Supervisor::where('api_token', $token)->get()[0];
+
+        return response()->json($data, 200);
+    }
+
     
     public function getNames(Request $request) {
         $token = $request->get('api_token');
@@ -62,6 +69,17 @@ class SupervisorController extends Controller
 
         $data->makeHidden(['tags', 'type_name', 'vacant_places', 'state_name', 'supervisor_name']);
         return response()->json($data, 200);
+    }
+
+    public function updateAbout(Request $request) {
+        $token = $request->get('api_token');
+        $id = Supervisor::where('api_token', $token)->select('id')->get()[0]['id'];
+
+        if (isset($request['about'])) {
+            Supervisor::where('id', $id)->update(['about' => $request['about']]);
+        }
+
+        return response()->json(['success' => 'OK'], 200);
     }
 
     public function getProjects(Request $request) {
