@@ -17,7 +17,8 @@ class CreateProjectsTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->integer('places');
-            $table->enum('state', ['Обработка', 'Открытый', 'Активный','Закрытый']);
+            $table->unsignedBiginteger('state_id');
+            $table->foreign('state_id')->references('id')->on('states')->onDelete('cascade');
             $table->unsignedBiginteger('supervisor_id'); // supervisor_id
             $table->foreign('supervisor_id')->references('id')->on('supervisors')->onDelete('cascade');
             $table->unsignedBiginteger('type_id'); // type_id

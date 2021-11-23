@@ -17,6 +17,9 @@ use App\ProjectTag;
 use App\State;
 use App\Type;
 use App\User;
+use App\Supervisor;
+use App\Http\Requests\CreateProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -28,6 +31,66 @@ use \Illuminate\Support\Facades\Response as FacadeResponse;
 
 class ProjectController extends Controller
 {
+
+    public function create(CreateProjectRequest $request) {
+        $token = $request->get('api_token');
+        $id = Supervisor::where('api_token', $token)->select('id')->get()[0]['id'];
+        
+        $project_id = Project::create([
+            'supervisor_id' => $id,
+            'state_id' => 1, //в обработке
+            'title' => $request['title'],
+            'places' => $request['places'],
+            'difficulty' => $request['difficulty'],
+            'date_start' => $request['date_start'],
+            'date_end' => $request['date_end'],
+            'goal' => $request['goal'],
+            'idea' => $request['idea'],
+            'customer' => $request['customer'],
+            'type_id' => $request['type'],
+            'expected_result' => '',
+            'requirements' => $request['requirements'],
+        ])->id;
+
+        foreach ($request['tags'] as $tag) {
+            if (!is_int($tag)) {
+                return response()->json([
+                    'status' => false, 
+                    'message' => 'Массив тегов содержит не число'], 
+                    400); 
+            }
+
+            ProjectTag::create([
+                'project_id' => $project_id,
+                'tag_id' =>  $tag
+            ]);
+        }
+
+        return response()->json(['success' => 'OK'], 200);
+    }
+
+    public function update($id, UpdateProjectRequest $request) {
+        $token = $request->get('api_token');
+        $id_supervisor = Supervisor::where('api_token', $token)->select('id')->get()[0]['id'];
+
+        $projs = Project::where('supervisor_id', $id_supervisor)->where('id', $id)->get();
+        if ($projs->count() == 0) {
+            return response()->json(['error' => 'У руководителя нет такого проекта'], 400);
+        }
+
+        $updated = [];
+        $possibleFiled = ['title', 'places', 'difficulty', 'date_start', 'date_end', 
+        'goal', 'idea', 'customer', 'type', 'requirements', 'tags'];
+
+        foreach ($possibleFiled as $v) {
+            if (isset($request[$v]))
+                $updated[$v] = $request[$v];
+        }
+        
+        Project::where('id', $id)->update($updated);
+
+        return response()->json(['success' => 'OK'], 200);
+    }
 
     public function index() {
         $data = Project::join('states','states.id','=','projects.state_id')->where('states.state','!=','Обработка')

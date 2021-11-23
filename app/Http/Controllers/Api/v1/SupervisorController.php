@@ -21,7 +21,6 @@ class SupervisorController extends Controller
      * @param RegisterSupervisorRequestApi
      * @return \Illuminate\Http\JsonResponse|object
      */
-
     public function register(RegisterSupervisorRequest $request) {
         User::create (
             [
@@ -52,6 +51,17 @@ class SupervisorController extends Controller
                 "status"=>false,
                 ],401);
         }
+    }
+
+    
+    public function getNames(Request $request) {
+        $token = $request->get('api_token');
+        $id = Supervisor::where('api_token', $token)->select('id')->get()[0]['id'];
+
+        $data = Project::where('supervisor_id', $id)->select('id', 'title')->get();
+
+        $data->makeHidden(['tags', 'type_name', 'vacant_places', 'state_name', 'supervisor_name']);
+        return response()->json($data, 200);
     }
 
     public function getProjects(Request $request) {
