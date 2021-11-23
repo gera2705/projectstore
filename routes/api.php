@@ -55,6 +55,11 @@ Route::group(['middleware'=>['apiAuth']], function() {
     Route::get('/candidate/skills', 'Api\v1\CandidateController@getSkills');
 });
 
+Route::group(['middleware'=>['apiAuth']], function() {
+    Route::get('/supervisor/projects', 'Api\v1\SupervisorController@getProjects');
+});
+
+
 
 
 Route::get('/skills', 'Api\v1\SkillsController@index');
