@@ -58,6 +58,7 @@ Route::group(['middleware'=>['apiAuth']], function() {
 Route::group(['middleware'=>['apiAuth']], function() {
     //проекты
     Route::get('/supervisor/projects', 'Api\v1\SupervisorController@getProjects');
+    Route::get('/supervisor/projects/{id}', 'Api\v1\SupervisorController@getProjectById');
     Route::post('/supervisor/projects', 'Api\v1\ProjectController@create');
     Route::put('/supervisor/projects/{id}', 'Api\v1\ProjectController@update')->where('id','[0-9]+');
     Route::get('/supervisor/projects/names', 'Api\v1\SupervisorController@getNames');

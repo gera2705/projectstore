@@ -63,6 +63,12 @@ class SupervisorController extends Controller
         return response()->json($data, 200);
     }
 
+    public function getProjectById($id, Request $request) {
+        $data = Project::where('id', $id)->get()[0];
+
+        $data->makeHidden(['deleted_at', 'updated_at', 'result', 'additional_inf', 'type_id', 'supervisor_id', 'state_id']);
+        return response()->json($data, 200);
+    }
     
     public function getNames(Request $request) {
         $token = $request->get('api_token');
