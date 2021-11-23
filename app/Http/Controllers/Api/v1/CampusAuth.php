@@ -130,14 +130,14 @@ class CampusAuth
         
         $data = Supervisor::where('api_token', $token)->get();
         if ($data->count() != 0) {
-            Supervisor::where('api_token', $token)->update('api_token', null);
+            Supervisor::where('api_token', $token)->update(['api_token' => null]);
         }
 
         $data = Candidate::where('api_token', $token)->get();
         if ($data->count() != 0) {
-            Candidate::where('api_token', $token)->update('api_token', null);
+            Candidate::where('api_token', $token)->update(['api_token' => null]);
         }
-        
+
         return redirect()->away('https://int.istu.edu/?logout=yes');
     }
 }
