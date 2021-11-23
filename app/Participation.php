@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Participation extends Model
 {
   public $timestamps = false;
-  protected $fillable = ['motivation', 'id_project', 'id_candidate', 'id_state', 'id'];
+  protected $fillable = ['motivation', 'id_project', 'id_candidate', 'id_state', 'id', 'date'];
   protected $hidden = ['candidate', 'states', 'projects'];
   protected $appends = ['state', 'skills', 'project'];
 

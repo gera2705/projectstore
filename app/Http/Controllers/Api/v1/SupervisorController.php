@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterSupervisorRequest;
 use App\Supervisor;
 use App\User;
+use App\Participation;
 use App\Project;
+use App\Candidate;
 use Illuminate\Http\Request;
 use App\Http\Requests\RegisterSupervisorRequestApi;
 use Illuminate\Support\Facades\Hash;
@@ -68,6 +70,61 @@ class SupervisorController extends Controller
         $data = Project::where('supervisor_id', $id)->select('id', 'title')->get();
 
         $data->makeHidden(['tags', 'type_name', 'vacant_places', 'state_name', 'supervisor_name']);
+        return response()->json($data, 200);
+    }
+
+    public function getParticipations(Request $request) {
+        $token = $request->get('api_token');
+        $id = Supervisor::where('api_token', $token)->select('id')->get()[0]['id'];
+
+        $projects = Project::where('supervisor_id', $id)->select('id', 'title')->get();
+        $id_projects = [];
+        foreach ($projects as $project) {
+            array_push($id_projects, $project['id']);
+        }
+
+        $data = Participation::whereIn('id_project', $id_projects)->where('id_state', 1)->get();
+    
+        foreach ($data as $key => $value) {
+            $fio = Candidate::where('id', $value['id_candidate'])->select('fio')->get()[0]['fio'];
+
+            $data[$key]['fio'] = $fio;
+            $data[$key]['project_title'] = $value['project']['title'];
+        }
+
+        $data = $data->sortByDesc('date');
+        
+        $data->makeHidden(['project', 'id_state', 'id_candidate', 'id_project', 'state', 'motivation', 'date']);
+        return response()->json($data, 200);
+    }
+
+    function getPaticipate($id_part, Request $request) {
+        $token = $request->get('api_token');
+        $id = Supervisor::where('api_token', $token)->select('id')->get()[0]['id'];
+
+        $projects = Project::where('supervisor_id', $id)->select('id', 'title')->get();
+        $id_projects = [];
+        foreach ($projects as $project) {
+            array_push($id_projects, $project['id']);
+        }
+
+        $id_project = Participation::where('id', $id_part)->get()[0]['id_project'];
+        if (!in_array($id_project, $id_projects)) {
+            return response()->json(['error' => 'Заявка не относится к проекту преподавателя'], 403);
+        }
+
+        $data = Participation::where('id', $id_part)->get()[0];
+        $data_student = Candidate::where('id', $data['id_candidate'])->get()[0];
+        $data_project = Project::where('id', $data['id_project'])->get()[0];
+        
+        $data['project_title'] = $data['project']['title'];
+        $data->makeHidden(['id_project', 'id_state', 'state', 'project']);
+
+        $data['group'] = $data_student['training_group'];
+        $data['phone'] = $data_student['phone'];
+        $data['email'] = $data_student['email'];
+        $data['tags'] = $data_project['tags'];
+
         return response()->json($data, 200);
     }
 

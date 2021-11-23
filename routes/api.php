@@ -62,6 +62,10 @@ Route::group(['middleware'=>['apiAuth']], function() {
     Route::put('/supervisor/projects/{id}', 'Api\v1\ProjectController@update')->where('id','[0-9]+');
     Route::get('/supervisor/projects/names', 'Api\v1\SupervisorController@getNames');
 
+    //заявки
+    Route::get('/supervisor/participation', 'Api\v1\SupervisorController@getParticipations');
+    Route::get('/supervisor/participation/{id}', 'Api\v1\SupervisorController@getPaticipate');
+
     //личный кабинет
     Route::get('/supervisor', 'Api\v1\SupervisorController@get');
     Route::put('/supervisor', 'Api\v1\SupervisorController@updateAbout');
