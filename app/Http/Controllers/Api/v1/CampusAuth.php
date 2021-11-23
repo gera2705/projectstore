@@ -123,4 +123,10 @@ class CampusAuth
         
         return json_encode(['token' => $api_token]);
     }
+
+    public function logout() {
+
+        
+        return redirect()->away('https://int.istu.edu/?logout=yes');
+    }
 }

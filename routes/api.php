@@ -79,8 +79,6 @@ Route::group(['middleware'=>['apiAuth']], function() {
 });
 
 
-
-
 Route::get('/skills', 'Api\v1\SkillsController@index');
 
 
