@@ -89,6 +89,10 @@ class ProjectController extends Controller
 
         //фильтрация по названию
         $title = $request->input('title') ?? '';
+
+        $title = ltrim($title, '"');
+        $title = rtrim($title, '"');
+
         if ($title != '') {
             $data = $data->filter(function ($value) use ($title) {
                 return (strpos(mb_strtolower($value->title), mb_strtolower($title)) !== false);
@@ -98,6 +102,13 @@ class ProjectController extends Controller
         //фильтрация по датам
         $dateStart = $request->input('date_start') ?? '';
         $dateEnd = $request->input('date_end') ?? '';
+
+        $dateStart = ltrim($dateStart, '"');
+        $dateStart = rtrim($dateStart, '"');
+        
+        $dateEnd = rtrim($dateStart, '"');
+        $dateEnd = ltrim($dateEnd, '"');
+
         if ($dateStart != '') {
             $data = $data->filter(function ($value) use ($dateStart) {
                 return $value->date_start >= $dateStart;

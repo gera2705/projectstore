@@ -88,7 +88,7 @@
                     </div>
                     <div class="auth"> <!-- Authorization window -->
                         <div class="auth__title">Авторизация</div>
-                        <a href="//localhost/campus_auth">
+                        <a href="/campus_auth">
                             <script src="//int.istu.edu/oauth/auth_button.js"></script>
                         </a>
                         <!-- <form method="POST" action="{{ route('login') }}">

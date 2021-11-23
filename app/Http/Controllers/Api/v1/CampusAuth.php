@@ -66,11 +66,8 @@ class CampusAuth
                 'numz' => $numz,
                 'phone' => '',
                 'about' => '',
-                'competencies' => '',
                 'course' => $course,
                 'training_group' => $group,
-                'experience' => '',
-                'is_watched' => 0,
                 'api_token' => $api_token
             ]);
         } else {
@@ -79,7 +76,6 @@ class CampusAuth
                 'email' => $return['email'],
                 'course' => $course,
                 'training_group' => $group,
-                'is_watched' => 0,
                 'api_token' => $api_token
             ]);
         }
