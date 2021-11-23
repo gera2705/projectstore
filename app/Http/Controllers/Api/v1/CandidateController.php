@@ -15,6 +15,16 @@ use Illuminate\Http\Request;
 
 class CandidateController extends Controller
 {
+    public function getById($id, Request $request) {
+        $data = Candidate::where('id', $id)->get()[0];
+
+        $id_finalState = StateParticipation::where('state', 'Завершил')->select('id')->get()[0]['id'];
+        $participation = Participation::select('id_project')->where('id_candidate', $id)->where('id_state', $id_finalState)->pluck('id_project');
+        $data['experience'] = $participation;
+
+        return response()->json($data, 200);
+    }
+
 	public function index(Request $request) {
         $token = $request->get('api_token');
         $id = Candidate::where('api_token', $token)->select('id')->get()[0]['id'];
@@ -81,7 +91,8 @@ class CandidateController extends Controller
             'id_project' => $id_project,
             'id_candidate' => $id,
             'id_state' => StateParticipation::where('state', 'Ожидание рассмотрения')->select('id')->get()->toArray()[0]['id'],
-            'motivation' => $request['motivation']
+            'motivation' => $request['motivation'],
+            'date' => date('Y-m-d')
         ])->id;
 
         foreach ($request['skills'] as $skill) {

@@ -9,6 +9,7 @@ use App\User;
 use App\Participation;
 use App\Project;
 use App\Candidate;
+use App\Review;
 use Illuminate\Http\Request;
 use App\Http\Requests\RegisterSupervisorRequestApi;
 use Illuminate\Support\Facades\Hash;
@@ -73,6 +74,30 @@ class SupervisorController extends Controller
         return response()->json($data, 200);
     }
 
+    public function getParicipateProject($idProject, Request $request) {
+        $token = $request->get('api_token');
+        $id = Supervisor::where('api_token', $token)->select('id')->get()[0]['id'];
+
+
+        $projects = Project::where('supervisor_id', $id)->where('id', $idProject)->get();
+        if ($projects->count() == 0) {
+            return response()->json(['error' => 'Этот проект не принадлежит руководителю'], 200);
+        }
+
+
+        $data = Participation::where('id_project', $idProject)->where('id_state', 2)->get();
+    
+        foreach ($data as $key => $value) {
+            $fio = Candidate::where('id', $value['id_candidate'])->select('fio')->get()[0]['fio'];
+            $data[$key]['fio'] = $fio;
+        }
+
+        $data = $data->sortByDesc('date');
+        
+        $data->makeHidden(['project', 'id_state', 'id_candidate', 'id_project', 'state', 'motivation', 'date']);
+        return response()->json($data, 200);
+    }
+
     public function getParticipations(Request $request) {
         $token = $request->get('api_token');
         $id = Supervisor::where('api_token', $token)->select('id')->get()[0]['id'];
@@ -98,7 +123,25 @@ class SupervisorController extends Controller
         return response()->json($data, 200);
     }
 
-    function getPaticipate($id_part, Request $request) {
+    public function removeParticipate($id, Request $request) {
+        Participation::where('id', $id)->update(['id_state' => 6]); //исключен
+
+        $data = Participation::where('id', $id)->get()[0];
+
+
+        if (isset($request['review'])) {
+            Review::create([
+                'text' => $request['review'],
+                'id_student' => $data['id_candidate'],
+                'id_project' => $data['id_project'],
+                'date' => date('Y-m-d')     
+            ]);
+        }
+
+        return response()->json(['success' => 'OK'], 200);
+    }
+
+    public function getPaticipate($id_part, Request $request) {
         $token = $request->get('api_token');
         $id = Supervisor::where('api_token', $token)->select('id')->get()[0]['id'];
 

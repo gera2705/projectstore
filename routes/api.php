@@ -64,8 +64,13 @@ Route::group(['middleware'=>['apiAuth']], function() {
 
     //заявки
     Route::get('/supervisor/participation', 'Api\v1\SupervisorController@getParticipations');
-    Route::get('/supervisor/participation/{id}', 'Api\v1\SupervisorController@getPaticipate');
-    Route::get('/supervisor/student/reviews/{id}', 'Api\v1\ReviewController@get');
+    Route::get('/supervisor/participation/{id}', 'Api\v1\SupervisorController@getPaticipate')->where('id','[0-9]+');
+    Route::get('/supervisor/student/reviews/{id}', 'Api\v1\ReviewController@get')->where('id','[0-9]+');
+
+    //участники
+    Route::delete('/supervisor/participation/{id}', 'Api\v1\SupervisorController@removeParticipate')->where('id','[0-9]+');
+    Route::get('/supervisor/projects/{id}/participation', 'Api\v1\SupervisorController@getParicipateProject')->where('id','[0-9]+');
+    Route::get('/supervisor/student/{id}', 'Api\v1\CandidateController@getById')->where('id','[0-9]+');
 
     //личный кабинет
     Route::get('/supervisor', 'Api\v1\SupervisorController@get');
