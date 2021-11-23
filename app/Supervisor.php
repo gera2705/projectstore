@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Supervisor extends Model
 {
-    protected $fillable = ['fio', 'email', 'position'];
+    protected $fillable = ['fio', 'email', 'position', 'about'];
     protected $hidden = ['api_token'];
 
     public function projects() {
-        return $this->hasMany('App\Project','supervisor_id');
+        return $this->hasMany('App\Project', 'supervisor_id');
     }
 }

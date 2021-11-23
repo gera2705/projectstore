@@ -3,10 +3,78 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Candidate;  
+use App\Supervisor;  
 use Illuminate\Support\Str;
 
 class CampusAuth 
 {
+
+    private function authTeacher($return) {
+        $fio = $return['last_name'] . ' ' . $return['name'] . ' ' . $return['second_name'];
+        $email = $return['email'];
+        $position = $return['data_teacher']['dep'];
+
+        $api_token = hash('sha256', Str::random(60));
+
+        $supervisor = Supervisor::where('email', $email)->limit(1)->get();
+
+        if ($supervisor->count() == 0) {
+            Supervisor::create([
+                'fio' => $fio,
+                'email' => $email,
+                'position' => $position,
+                'about' => '',
+                'api_token' => $api_token
+            ]);
+        } else {
+            Supervisor::where('fio', $fio)->limit(1)->update([
+                'fio' => $fio, 
+                'email' => $email,
+                'position' => $position,
+                'api_token' => $api_token
+            ]);
+        }
+
+        return $api_token;
+    }
+
+    private function authStudent($return) {
+        //работа с пользователями
+        $numz = $return['data_student']['nomz'];
+        $user = Candidate::where('numz', $numz)->limit(1)->get();
+        $fio = $return['last_name'] . ' ' . $return['name'] . ' ' . $return['second_name'];
+        $group = $return['data_student']['grup'];
+        //высчитываем номер курса из группы
+        $course = intval(explode('-', $group)[1]);
+        //если сентябрь то на курс выше
+        $course = date('m') > 8 ? date('y') - $course + 1 : date('y') - $course;
+        $api_token = hash('sha256', Str::random(60));
+
+
+        if ($user->count() == 0) {
+            Candidate::create([
+                'fio' => $fio,
+                'email' => $return['email'],
+                'numz' => $numz,
+                'phone' => '',
+                'about' => '',
+                'course' => $course,
+                'training_group' => $group,
+                'api_token' => $api_token
+            ]);
+        } else {
+            Candidate::where('numz', $numz)->limit(1)->update([
+                'fio' => $fio, 
+                'email' => $return['email'],
+                'course' => $course,
+                'training_group' => $group,
+                'api_token' => $api_token
+            ]);
+        }
+
+        return $api_token;
+    }
+
     public function auth() {
         $return = false;
         $APP = [
@@ -47,38 +115,12 @@ class CampusAuth
             if (isset($data['result']['email'])) $return = $data['result'];
         }
 
-        //работа с пользователями
-        $numz = $return['data_student']['nomz'];
-        $user = Candidate::where('numz', $numz)->limit(1)->get();
-        $fio = $return['last_name'] . ' ' . $return['name'] . ' ' . $return['second_name'];
-        $group = $return['data_student']['grup'];
-        //высчитываем номер курса из группы
-        $course = intval(explode('-', $group)[1]);
-        //если сентябрь то на курс выше
-        $course = date('m') > 8 ? date('y') - $course + 1 : date('y') - $course;
-        $api_token = hash('sha256', Str::random(60));
+        $api_token = null;
+        if ($return['is_student']) 
+            $api_token = $this->authStudent($return);
+        else 
+            $api_token = $this->authTeacher($return);
 
-
-        if ($user->count() == 0) {
-            Candidate::create([
-                'fio' => $fio,
-                'email' => $return['email'],
-                'numz' => $numz,
-                'phone' => '',
-                'about' => '',
-                'course' => $course,
-                'training_group' => $group,
-                'api_token' => $api_token
-            ]);
-        } else {
-            Candidate::where('numz', $numz)->limit(1)->update([
-                'fio' => $fio, 
-                'email' => $return['email'],
-                'course' => $course,
-                'training_group' => $group,
-                'api_token' => $api_token
-            ]);
-        }
         
         return json_encode(['token' => $api_token]);
     }
