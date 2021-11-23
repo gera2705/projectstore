@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 
 class CampusAuth 
 {
-
     private function authTeacher($return) {
         $fio = $return['last_name'] . ' ' . $return['name'] . ' ' . $return['second_name'];
         $email = $return['email'];

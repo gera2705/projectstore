@@ -65,6 +65,7 @@ Route::group(['middleware'=>['apiAuth']], function() {
     //заявки
     Route::get('/supervisor/participation', 'Api\v1\SupervisorController@getParticipations');
     Route::get('/supervisor/participation/{id}', 'Api\v1\SupervisorController@getPaticipate');
+    Route::get('/supervisor/student/reviews/{id}', 'Api\v1\ReviewController@get');
 
     //личный кабинет
     Route::get('/supervisor', 'Api\v1\SupervisorController@get');
