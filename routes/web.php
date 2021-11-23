@@ -17,7 +17,7 @@ Route::get('/why-answer', 'MainController@whyAnswer')->name('why-answer'); // "�
 
 // Вход через кампус
 Route::get('/campus_auth', 'Api\v1\CampusAuth@auth');
-Route::get('/campus_logou', 'Api\v1\CampusAuth@logout');
+Route::get('/campus_out', 'Api\v1\CampusAuth@logout');
 
 Route::get('/project/{projectId}', 'ProjectController@show')->name('showProject')->where('projectId','[0-9]+'); // Просмотр одного проекта
 
