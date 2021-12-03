@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Skill;
+use Illuminate\Http\Request;
 
 class SkillsController extends Controller
 {
-	public function index() {
+	public function index(Request $request) {
 		$data = Skill::all()->sortBy('id');
 
 		$searchName = $request->get('name') ?? '';
