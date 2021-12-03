@@ -38,7 +38,7 @@ class ProjectController extends Controller
         
         $project_id = Project::create([
             'supervisor_id' => $id,
-            'state_id' => 1, //в обработке
+            'state_id' => 2, //активный
             'title' => $request['title'],
             'places' => $request['places'],
             'difficulty' => $request['difficulty'],

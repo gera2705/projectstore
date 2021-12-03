@@ -38,6 +38,7 @@ Route::group(['middleware'=>['auth:api']], function () {
 Route::get('/projects', 'Api\v1\ProjectController@index'); 
 Route::get('/projects/filter', 'Api\v1\ProjectController@filter');
 Route::get('/tags', 'Api\v1\TagController@index');
+
 Route::get('/types', 'Api\v1\TypeController@index');
 Route::get('/states', 'Api\v1\StateController@index');
 
