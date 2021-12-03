@@ -18,7 +18,7 @@ class SkillsController extends Controller
 
 		if ($searchName != '') {
 				$data = $data->filter(function ($value) use ($searchName) {
-						return (str_starts_with(mb_strtolower($value->tag), mb_strtolower($searchName)) !== false);
+						return (str_starts_with(mb_strtolower($value->skill), mb_strtolower($searchName)) !== false);
 				})->values();
 		}
 
