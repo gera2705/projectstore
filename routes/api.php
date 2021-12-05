@@ -50,6 +50,7 @@ Route::group(['middleware'=>['apiAuth']], function() {
     Route::put('/candidate', 'Api\v1\CandidateController@updateInfo');
 
     Route::get('/participations', 'Api\v1\CandidateController@participations');
+    Route::get('/participations/projects', 'Api\v1\CandidateController@getProjects');
     Route::delete('/participations/{id}', 'Api\v1\CandidateController@deleteParticipations')->where('id','[0-9]+');
     Route::post('/participations/{id}', 'Api\v1\CandidateController@createParticipation')->where('id','[0-9]+');    
 

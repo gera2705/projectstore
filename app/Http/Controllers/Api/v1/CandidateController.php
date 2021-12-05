@@ -47,7 +47,27 @@ class CandidateController extends Controller
         $token = $request->get('api_token');
 		$id = Candidate::where('api_token', $token)->select('id')->get()[0]['id'];
 
-        $data = Participation::where('id_candidate', $id)->simplePaginate(7);
+        $data = Participation::where('id_candidate', $id);
+
+        //заявка ожидает рассмотрения|отклонена|Отозвана
+        $data = $data->whereIn('id_state', [1, 4, 5]); 
+        $data = $data->simplePaginate(7);
+        $data->makeHidden(['id_project', 'id_candidate', 'id_state', 'date']);
+
+        $data = $data->toArray()['data'];
+        
+        return response()->json($data, 200);
+    }
+
+    public function getProjects(Request $request) {
+        $token = $request->get('api_token');
+		$id = Candidate::where('api_token', $token)->select('id')->get()[0]['id'];
+
+        $data = Participation::where('id_candidate', $id);
+
+        //студент участвует|Завершил|Исключен
+        $data = $data->whereIn('id_state', [2, 3, 6]); 
+        $data = $data->simplePaginate(7);
         $data->makeHidden(['id_project', 'id_candidate', 'id_state', 'date']);
 
         $data = $data->toArray()['data'];
