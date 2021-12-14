@@ -68,7 +68,7 @@ class CandidateController extends Controller
         //студент участвует|Завершил|Исключен
         $data = $data->whereIn('id_state', [2, 3, 6]); 
         $data = $data->simplePaginate(7);
-        $data->makeHidden(['id_project', 'id_candidate', 'id_state', 'date']);
+        $data->makeHidden(['id_project', 'id_candidate', 'date']);
 
         $data = $data->toArray()['data'];
         
