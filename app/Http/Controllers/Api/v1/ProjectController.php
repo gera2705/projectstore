@@ -121,41 +121,53 @@ class ProjectController extends Controller
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 
+    private function stringToArray($arr) {
+        if (is_string($arr)) {
+            return json_decode('[' . $arr . ']', true);
+        } else {
+            return $arr;
+        }
+    }
+
     public function filter(Request $request) {
         $data = Project::all();
-        
+        $inputTypes = $this->stringToArray($request->input('type'));
+        $inputState = $this->stringToArray($request->input('state'));
+        $inputSupervisors = $this->stringToArray($request->input('supervisor'));
+        $inputDiff = $this->stringToArray($request->input('difficulty'));
+        $inputTags = $this->stringToArray($request->input('tags'));
         //фильтрация по типу
         $types = array_map(function($value) {
             return intval($value);
-        }, $request->input('type') ?? []);
+        }, $inputTypes ?? []);
         if (count($types) != 0)
             $data = $data->whereIn('type_id', $types);
 
         //фильтрация по состоянию
         $states = array_map(function($value) {
             return intval($value);
-        }, $request->input('state') ?? []);
+        }, $inputState ?? []);
         if (count($states) != 0)
             $data = $data->whereIn('state_id', $states);
 
         //фильтрация по руководителю
         $supervisors = array_map(function($value) {
             return intval($value);
-        }, $request->input('supervisor') ?? []);
+        }, $inputSupervisors ?? []);
         if (count($supervisors) != 0)
             $data = $data->whereIn('supervisor_id', $supervisors);
 
         //фильтрация по сложности
         $difficulty = array_map(function($value) {
             return intval($value);
-        }, $request->input('difficulty') ?? []);
+        }, $inputDiff ?? []);
         if (count($difficulty) != 0)
             $data = $data->whereIn('difficulty', $difficulty);
 
         //фильтрация по тегам
         $tags = array_map(function($value) {
             return intval($value);
-        }, $request->input('tags') ?? []);
+        }, $inputTags ?? []);
         if (count($tags) != 0) {
             $idProjectsWithTags = ProjectTag::select('project_id as id')->whereIn('tag_id', $tags)->get()->toArray();
             $idProject = [];
@@ -209,8 +221,8 @@ class ProjectController extends Controller
         foreach ($data as $key => $value) {
            array_push($dataArr, $value);
         }
-        return response()->json(['data' => $dataArr, 'request' => urldecode($_SERVER['REQUEST_URI'])])->setStatusCode(200);
-        //return response()->json($dataArr)->setStatusCode(200);
+        //return response()->json(['data' => $dataArr, 'request' => urldecode($_SERVER['REQUEST_URI'])])->setStatusCode(200);
+        return response()->json($dataArr)->setStatusCode(200);
     }
 
     public function show($project_id) {
