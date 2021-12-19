@@ -52,7 +52,7 @@ class CandidateController extends Controller
         //заявка ожидает рассмотрения|отклонена|Отозвана
         $data = $data->whereIn('id_state', [1, 4, 5]); 
         $data = $data->simplePaginate(7);
-        $data->makeHidden(['id_project', 'id_candidate', 'id_state', 'date']);
+        $data->makeHidden(['id_project', 'id_candidate', 'date']);
 
         $data = $data->toArray()['data'];
         

@@ -93,6 +93,17 @@ class ProjectController extends Controller
         return response()->json(['success' => 'OK'], 200);
     }
 
+    public function getById($id) {
+        $data = Project::join('states','states.id','=','projects.state_id')->where('states.state','!=','Обработка')
+        ->where('projects.id', '=', $id)->select('projects.*')->orderBy('id','desc')->simplePaginate(7);
+        $data->makeHidden(['state_id', 'supervisor_id', 'type_id']);
+
+        $data = $data->toArray()['data'][0];
+
+        
+        return response()->json($data, 200);
+    }
+
     public function index() {
         $data = Project::join('states','states.id','=','projects.state_id')->where('states.state','!=','Обработка')
         ->orderBy('updated_at', 'DESC')->select('projects.*')->orderBy('id','desc')->simplePaginate(7);
@@ -173,7 +184,7 @@ class ProjectController extends Controller
         $dateStart = ltrim($dateStart, '"');
         $dateStart = rtrim($dateStart, '"');
         
-        $dateEnd = rtrim($dateStart, '"');
+        $dateEnd = rtrim($dateEnd, '"');
         $dateEnd = ltrim($dateEnd, '"');
 
         if ($dateStart != '') {
