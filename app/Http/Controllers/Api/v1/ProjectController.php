@@ -105,6 +105,9 @@ class ProjectController extends Controller
     }
 
     public function index() {
+        $dataAll = Project::join('states','states.id','=','projects.state_id')->where('states.state','!=','Обработка')->get();
+        $projectCount = count($dataAll); 
+
         $data = Project::join('states','states.id','=','projects.state_id')->where('states.state','!=','Обработка')
         ->orderBy('updated_at', 'DESC')->select('projects.*')->orderBy('id','desc')->simplePaginate(7);
        
@@ -112,7 +115,7 @@ class ProjectController extends Controller
         $data = $data->toArray()['data'];
         
        
-        return response()->json($data)->setStatusCode(200, 'Paginating 7 projects');
+        return response()->json(['data' => $data, 'projectCount' => $projectCount])->setStatusCode(200, 'Paginating 7 projects');
     }
 
     public function paginate($items, $perPage = 7, $page = null, $options = []) {
@@ -131,6 +134,8 @@ class ProjectController extends Controller
 
     public function filter(Request $request) {
         $data = Project::all();
+         
+
         $inputTypes = $this->stringToArray($request->input('type'));
         $inputState = $this->stringToArray($request->input('state'));
         $inputSupervisors = $this->stringToArray($request->input('supervisor'));
@@ -211,6 +216,7 @@ class ProjectController extends Controller
         }
 
         $page = intval($request->input('page')) ?? 1;
+        $projectCount = count($data);
         $data = $this->paginate($data, 7, $page);
         $data->makeHidden(['state_id', 'supervisor_id', 'type_id']);
        
@@ -222,7 +228,7 @@ class ProjectController extends Controller
            array_push($dataArr, $value);
         }
         //return response()->json(['data' => $dataArr, 'request' => urldecode($_SERVER['REQUEST_URI'])])->setStatusCode(200);
-        return response()->json($dataArr)->setStatusCode(200);
+        return response()->json(['data' => $dataArr, 'projectCount' => $projectCount])->setStatusCode(200);
     }
 
     public function show($project_id) {
