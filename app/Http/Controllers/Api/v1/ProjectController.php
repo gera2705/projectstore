@@ -123,7 +123,7 @@ class ProjectController extends Controller
 
     private function stringToArray($arr) {
         if (is_string($arr)) {
-            return json_decode('[' . $arr . ']', true);
+            return json_decode($arr, true);
         } else {
             return $arr;
         }
